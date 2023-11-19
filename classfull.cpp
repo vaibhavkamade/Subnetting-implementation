@@ -1,7 +1,10 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-int checker(string &str){
+
+//function that identifies the class of particular adress
+
+int classChecker(string &str){
     
     string temp = "";
     
@@ -14,6 +17,8 @@ int checker(string &str){
     
     return temp1;
 }
+
+//function to create binary number from the decimal number
 
 int binary(int decimal){
     int remainder = 0;
@@ -29,9 +34,9 @@ int binary(int decimal){
   return binaryForm;
 }
 
-//function to create newsubnet
+//function to create newsubnet in binary form
 
-string subnetGen1(int n){
+string subnetGenBin(int n){
     
     string newSubnet = "11111111.11111111.11111111.11111111";
     int i = newSubnet.size()-1;
@@ -47,7 +52,9 @@ string subnetGen1(int n){
     return newSubnet;
 }
 
-pair<int,int> subnetGen2(string newSubnet){
+//function to find subnet generator and octet 
+
+pair<int,int> subnetGenerator(string newSubnet){
     int count = 0;
     int i = newSubnet.size()-1;
     int octet = 4;
@@ -67,7 +74,9 @@ pair<int,int> subnetGen2(string newSubnet){
 }
 
 
-string network1(string &IP , char c){
+//function to find network address address
+
+string netAddress(string &IP , char c){
     string network =  "";
     int count=0;
     if(c == 'A'){
@@ -99,7 +108,9 @@ string network1(string &IP , char c){
 }
 
 
-string subDeci(int octet , int subGen ){
+//function to find subnet mask in decimal format
+
+string subGenDec(int octet , int subGen ){
     string ans = "";
     int diff = 255 - subGen;
     if(octet == 4){
@@ -107,11 +118,15 @@ string subDeci(int octet , int subGen ){
         ans = "255.255.255." + to_string(subGen);
     }else if(octet == 3){
         ans = "255.255." + to_string(diff) + "0";
+    }else if(octet == 2){
+        ans = "255." + to_string(diff) + "0" + "0";
     }
 
     return ans;
 }
 
+
+//function to find the address ranges in network
 
 void addressRange(vector<string> &ans , int octet , int subGen , string network){
 
@@ -131,22 +146,6 @@ void addressRange(vector<string> &ans , int octet , int subGen , string network)
     }
 
 
-    // while(tempOctet <= octet){
-
-    //     int temp = 0;
-        
-    //     // if(tempOctet== 1){
-
-    //     //    while (temp <= 256)
-    //     //     {
-    //     //     string str =  o1+ "." + o2 + "." + to_string(temp-1)  +"."+ to_string(temp-1);
-    //     //     ans.push_back(str);
-    //     //     temp += temp;
-    //     //     if(temp >= 256) tempOctet++;
-    //     //     }
-    //     // }
-    // }
-
 
     if(octet == 4){
 
@@ -163,43 +162,38 @@ void addressRange(vector<string> &ans , int octet , int subGen , string network)
         ans.push_back(str);
         temp  += subGen;
         }
+    }else if(octet == 2){
+        string str =  o1+ "." + to_string(temp) + "." + o3 +"."+ o4;
+        ans.push_back(str);
+        temp  += subGen;
     }
-
-       
-      
-       
-
-        
-
-
 
 }
 
 int main(){
     
-    string str;
+    string IP_str;
     
     int host;
-    cout << "Please Enter the IP Address " << endl;
-    cin >> str;
-    
-    int class1 = checker(str);
+    cout << "Please Enter the IP Address: " ;
+    cin >> IP_str;
+    int class1 = classChecker(IP_str);
     // cout<<class1<<endl;
-    char c;
+    char c; //character representing class 
     if(class1 >= 0 && class1 <= 127){
-        cout <<"IP address belong to class A " << endl;
+        cout <<"IP address belong to class: A " << endl;
         c = 'A';
     }else if(class1 >= 128 && class1 <= 192){
-        cout <<"IP address belong to class B " << endl;
+        cout <<"IP address belong to class: B " << endl;
         c = 'B';
     }else if(class1 >= 193 && class1 <= 224){
-        cout <<"IP address belong to class C " << endl;
+        cout <<"IP address belong to class: C " << endl;
         c = 'C';
     }else{
         cout << "Network can't be used for Subnetting " << endl;
     }
 
-    cout << "Enter the number of host " << endl;
+    cout << "Enter the number of host: ";
     cin >> host;
 
     int binaryHost = binary(host);
@@ -207,26 +201,23 @@ int main(){
     int count = log2(host) + 1;
     cout << binaryHost<<endl;
 
-    // while(binaryHost){
-    //     count += 1;
-    //     binaryHost = binaryHost >> 1;
-    // }
     
-    cout << count << " No of bits are reserved from right position " << endl;
+    cout <<"No of bits are reserved from right position: " <<count<< endl;
 
-    string newSubnet1 = subnetGen1(count);
-    cout << "New subnet generated is " << newSubnet1 << endl;
-    pair<int,int> p1 = subnetGen2(newSubnet1);
+    string newSubnet1 = subnetGenBin(count);
+    cout << "New subnet generated is: " << newSubnet1 << endl;
+    pair<int,int> p1 = subnetGenerator(newSubnet1);
     int octet = p1.second;
     int newSubnet2 = p1.first;
 
-    cout << "New subnet generator is " << newSubnet2 << endl;
-    cout << "Octet is " << octet << endl;
-    string netId = network1(str,c);
-    cout<<"Network adress id "<< network1(str,c) << endl;
-    cout << "Subnet in decimal "<< subDeci(octet,newSubnet2)<<endl;
+    cout << "New subnet generator is: " << newSubnet2 << endl;
+    cout << "Octet is: " << octet << endl;
+    string netId = netAddress(IP_str,c);
+    cout<<"Network adress id: "<< netAddress(IP_str,c) << endl;
+    cout << "Subnet in decimal: "<< subGenDec(octet,newSubnet2)<<endl;
 
     vector<string> ans;
+    cout <<"Network adress ranges are: " << endl;
     addressRange(ans,octet,newSubnet2,netId);
     for(auto it:ans){
         cout<<it<<" "<<endl;
